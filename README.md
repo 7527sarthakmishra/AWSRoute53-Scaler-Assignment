@@ -6,16 +6,20 @@ This project is an interface and workflow clone for demonstration purposes. It d
 
 ## Features
 
-- Mocked authentication with login, logout, expiring opaque sessions, and browser session persistence
-- Hosted zone CRUD with public/private zone types, search, and pagination
-- DNS record CRUD for `A`, `AAAA`, `CNAME`, `TXT`, `MX`, `NS`, `PTR`, `SRV`, and `CAA`
-- Record validation, filtering by name/value/type, and pagination
-- AWS console-inspired global header, Route 53 navigation, forms, tables, modals, empty states, and toast notifications
-- Placeholder pages for Dashboard, Traffic Policies, Health Checks, Resolver, and Profiles
-- JSON and BIND zone export
-- BIND zone import API
-- SQLite persistence and cascading record deletion
-- Responsive layout and Docker Compose setup
+- **Authentication**: Mocked console authentication with login, logout, expiring opaque sessions, browser session persistence, and AWS IAM account switcher mock
+- **Hosted Zones CRUD**: Full create, read, update, delete for public and private hosted zones with search, sorting, and pagination
+- **DNS Records CRUD**: Full create, read, update, delete for all Route 53 record types: `A`, `AAAA`, `CNAME`, `TXT`, `MX`, `NS`, `PTR`, `SRV`, and `CAA`
+- **Route 53 Console Experience**: Pixel-accurate AWS Cloudscape console UI with top navigation, Route 53 sidebar, breadcrumbs, search, filters, pagination, modals, alerts, and toast notifications
+- **Interactive Dashboard**: Route 53 Overview dashboard with real hosted zones metrics, record counts, recent zones table, and quick actions
+- **Hosted Zone Details**: Collapsible details panel displaying Zone ID, status ("In sync"), record count, description, and 4 assigned AWS authoritative name servers with one-click copy
+- **Record Inspector**: Quick record details card with copy-to-clipboard actions
+- **Bulk Operations (Bonus)**: Multi-row selection checkboxes, indeterminate select-all, bulk delete for hosted zones and records
+- **BIND Zone File Import (Bonus)**: Import DNS records from BIND zone files via file upload or paste, with optional replacement and sample template loader
+- **Zone Export (Bonus)**: One-click export of hosted zones in standard JSON and BIND `.zone` formats
+- **Dark Mode (Bonus)**: Native AWS dark theme with persistent theme toggle in topbar and account menu
+- **Keyboard Shortcuts (Bonus)**: `Alt+S` or `/` for search, `Alt+C` to create, `Esc` to close, `?` for interactive shortcuts modal
+- **Mocked AWS Sections**: Authentic placeholder pages for Traffic Policies, Health Checks, Resolver VPCs, and Profiles
+- **SQLite Persistence**: Automatic schema migrations, relationship cascade deletion, and persistent volume support
 
 ## Technology
 
