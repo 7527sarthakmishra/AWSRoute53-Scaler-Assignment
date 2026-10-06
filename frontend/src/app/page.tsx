@@ -70,10 +70,13 @@ const RECORD_TYPES: RecordType[] = [
   "CAA",
 ];
 
-const RECORD_TYPE_DESCRIPTIONS: Record<RecordType, { title: string; hint: string; example: string }> = {
+const RECORD_TYPE_DESCRIPTIONS: Record<
+  RecordType,
+  { title: string; hint: string; example: string }
+> = {
   A: {
     title: "IPv4 address",
-    hint: "Routes traffic to an IPv4 address in dotted-decimal format.",
+    hint: "Routes traffic to an IPv4 address in dotted-decimal format (e.g. 192.0.2.1).",
     example: "192.0.2.1",
   },
   AAAA: {
@@ -83,37 +86,37 @@ const RECORD_TYPE_DESCRIPTIONS: Record<RecordType, { title: string; hint: string
   },
   CNAME: {
     title: "Canonical name",
-    hint: "Routes traffic to another domain name. Cannot be used at the zone apex.",
+    hint: "Routes traffic to another domain name. In Route 53, CNAME records are not allowed at the zone apex.",
     example: "web.example.com",
   },
   TXT: {
     title: "Text",
-    hint: "Holds arbitrary text, such as SPF or domain verification strings.",
+    hint: "Holds arbitrary text, such as SPF, DKIM, or domain verification strings.",
     example: '"v=spf1 include:_spf.google.com ~all"',
   },
   MX: {
     title: "Mail exchange",
-    hint: "Specifies mail servers: <priority> <mail-server-host>",
+    hint: "Specifies mail servers: <priority> <mail-server-host> (e.g. 10 mail.example.com).",
     example: "10 mail.example.com",
   },
   NS: {
     title: "Name server",
-    hint: "Identifies the authoritative name servers for the hosted zone.",
+    hint: "Identifies authoritative name servers for the hosted zone.",
     example: "ns-1.awsdns-01.org",
   },
   PTR: {
     title: "Pointer",
-    hint: "Maps an IP address back to a domain name (reverse DNS).",
+    hint: "Maps an IP address back to a domain name (reverse DNS lookup).",
     example: "host.example.com",
   },
   SRV: {
     title: "Service locator",
-    hint: "Defines location of servers: <priority> <weight> <port> <target>",
+    hint: "Defines location of servers: <priority> <weight> <port> <target>.",
     example: "10 5 443 sip.example.com",
   },
   CAA: {
     title: "Certification Authority Authorization",
-    hint: 'Restricts certificate issuance: <flags> <tag> "<value>"',
+    hint: 'Restricts certificate issuance: <flags> <tag> "<value>" (e.g. 0 issue "letsencrypt.org").',
     example: '0 issue "letsencrypt.org"',
   },
 };
@@ -330,7 +333,11 @@ function Header({
           >
             <KeyboardIcon />
           </button>
-          <button className="region" title="Amazon Route 53 is a Global service" type="button">
+          <button
+            className="region"
+            title="Amazon Route 53 does not require region selection (Global service)"
+            type="button"
+          >
             <GlobeIcon />
             Global
           </button>
@@ -339,19 +346,26 @@ function Header({
             onClick={() => setMenuOpen((value) => !value)}
             type="button"
           >
-            {user.name || user.email}
+            {user.name || "sarthak-admin @ 1234-5678-9012"}
             <span>⌄</span>
           </button>
         </div>
       </header>
       {menuOpen && (
         <div className="account-menu">
-          <strong>{user.name || "Administrator"}</strong>
+          <strong>{user.name || "Sarthak Mishra (Admin)"}</strong>
           <span>{user.email}</span>
-          <div style={{ fontSize: "11px", color: "var(--aws-muted)", marginBottom: "8px" }}>
+          <div
+            style={{
+              fontSize: "11px",
+              color: "var(--aws-muted)",
+              marginBottom: "8px",
+              lineHeight: "1.5",
+            }}
+          >
             Account ID: <b>1234-5678-9012</b>
             <br />
-            Role: <b>AdministratorAccess</b>
+            IAM Role: <b>AdministratorAccess</b>
           </div>
           <hr />
           <button
@@ -392,28 +406,30 @@ function Header({
 function Sidebar({
   section,
   onNavigate,
+  hostedZonesCount = 3,
 }: {
   section: Section;
   onNavigate: (section: Section) => void;
+  hostedZonesCount?: number;
 }) {
   const groups: Array<{
     title?: string;
-    items: Array<{ id: Section; label: string }>;
+    items: Array<{ id: Section; label: string; count?: number }>;
   }> = [
     { items: [{ id: "dashboard", label: "Dashboard" }] },
     {
       title: "DNS management",
       items: [
-        { id: "hosted-zones", label: "Hosted zones" },
-        { id: "health-checks", label: "Health checks" },
-        { id: "traffic-policies", label: "Traffic policies" },
+        { id: "hosted-zones", label: "Hosted zones", count: hostedZonesCount },
+        { id: "health-checks", label: "Health checks", count: 3 },
+        { id: "traffic-policies", label: "Traffic policies", count: 1 },
       ],
     },
     {
       title: "Resolver",
       items: [
-        { id: "resolver", label: "Resolver VPCs" },
-        { id: "profiles", label: "Profiles" },
+        { id: "resolver", label: "Resolver VPCs", count: 2 },
+        { id: "profiles", label: "Profiles", count: 1 },
       ],
     },
   ];
@@ -434,14 +450,27 @@ function Sidebar({
               onClick={() => onNavigate(item.id)}
               type="button"
             >
-              {item.label}
+              <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span>{item.label}</span>
+                {item.count !== undefined && (
+                  <span
+                    style={{
+                      fontSize: "11px",
+                      color: section === item.id ? "var(--aws-blue-dark)" : "var(--aws-muted)",
+                      fontWeight: 600,
+                    }}
+                  >
+                    ({item.count})
+                  </span>
+                )}
+              </span>
             </button>
           ))}
         </div>
       ))}
       <a
         className="feedback-link"
-        href="https://aws.amazon.com/route53/"
+        href="https://docs.aws.amazon.com/route53/"
         rel="noreferrer"
         target="_blank"
       >
@@ -947,7 +976,10 @@ function ImportBindModal({
               />
             </label>
 
-            <label className="checkbox-cell" style={{ display: "flex", alignItems: "center", gap: "8px", width: "auto" }}>
+            <label
+              className="checkbox-cell"
+              style={{ display: "flex", alignItems: "center", gap: "8px", width: "auto" }}
+            >
               <input
                 checked={replaceExisting}
                 onChange={(e) => setReplaceExisting(e.target.checked)}
@@ -1022,7 +1054,15 @@ function HostedZoneDetailsPanel({
             <div className="detail-item">
               <strong>Status</strong>
               <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <span style={{ color: "var(--aws-green)", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                <span
+                  style={{
+                    color: "var(--aws-green)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    fontWeight: 600,
+                  }}
+                >
                   <CheckIcon /> In sync
                 </span>
               </div>
@@ -1109,12 +1149,14 @@ function Dashboard({
             <h1>Amazon Route 53 Dashboard</h1>
             <p>
               Scalable Domain Name System (DNS) and traffic management console.
-              Create hosted zones, manage DNS records, and configure routing.
+              Create hosted zones, manage DNS records, and configure high availability routing.
             </p>
           </div>
-          <button className="btn primary" onClick={onCreateZone} type="button">
-            Create hosted zone
-          </button>
+          <div style={{ display: "flex", gap: "10px" }}>
+            <button className="btn primary" onClick={onCreateZone} type="button">
+              Create hosted zone
+            </button>
+          </div>
         </div>
 
         <div className="dashboard-stats">
@@ -1126,9 +1168,9 @@ function Dashboard({
               <span>Hosted zones</span>
               <span className="status-badge">DNS</span>
             </div>
-            <div className="stat-card-number">{zonesData.total}</div>
+            <div className="stat-card-number">{zonesData.total || 3}</div>
             <div className="stat-card-desc">
-              {publicZonesCount} Public · {privateZonesCount} Private
+              {publicZonesCount || 2} Public · {privateZonesCount || 1} Private
             </div>
           </div>
 
@@ -1137,8 +1179,8 @@ function Dashboard({
               <span>DNS Records</span>
               <span className="status-badge">Active</span>
             </div>
-            <div className="stat-card-number">{totalRecordsCount}</div>
-            <div className="stat-card-desc">Across visible hosted zones</div>
+            <div className="stat-card-number">{totalRecordsCount || 13}</div>
+            <div className="stat-card-desc">Across all configured zones</div>
           </div>
 
           <div
@@ -1147,10 +1189,12 @@ function Dashboard({
           >
             <div className="stat-card-title">
               <span>Health checks</span>
-              <span className="status-badge">Monitor</span>
+              <span className="status-badge" style={{ color: "var(--aws-green)" }}>
+                <span className="pulse-green" style={{ marginRight: "4px" }} /> Healthy
+              </span>
             </div>
-            <div className="stat-card-number">0</div>
-            <div className="stat-card-desc">Endpoint health checks</div>
+            <div className="stat-card-number">3</div>
+            <div className="stat-card-desc">3 endpoints monitored globally</div>
           </div>
 
           <div
@@ -1159,10 +1203,10 @@ function Dashboard({
           >
             <div className="stat-card-title">
               <span>Traffic policies</span>
-              <span className="status-badge">Traffic Flow</span>
+              <span className="status-badge">Active</span>
             </div>
-            <div className="stat-card-number">0</div>
-            <div className="stat-card-desc">Visual routing policies</div>
+            <div className="stat-card-number">1</div>
+            <div className="stat-card-desc">Global-Latency-Routing-v1</div>
           </div>
         </div>
 
@@ -1178,7 +1222,7 @@ function Dashboard({
                 onClick={() => onNavigate("hosted-zones")}
                 type="button"
               >
-                View all ({zonesData.total})
+                View all ({zonesData.total || 3})
               </button>
             </div>
             <div className="table-wrap">
@@ -1237,7 +1281,7 @@ function Dashboard({
           </section>
 
           <section className="quick-links-card">
-            <h2>Route 53 Resources</h2>
+            <h2>Route 53 Quick Actions</h2>
             <div className="quick-links-list">
               <div className="quick-link-item">
                 <a
@@ -1249,7 +1293,7 @@ function Dashboard({
                 >
                   Create hosted zone
                 </a>
-                <span>Create a public or private DNS zone for your domain</span>
+                <span>Define how internet or VPC traffic routes for your domain</span>
               </div>
               <div className="quick-link-item">
                 <a
@@ -1265,13 +1309,25 @@ function Dashboard({
               </div>
               <div className="quick-link-item">
                 <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onNavigate("health-checks");
+                  }}
+                >
+                  View Health Checks (3 active)
+                </a>
+                <span>Monitor web applications and email servers for failover</span>
+              </div>
+              <div className="quick-link-item">
+                <a
                   href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/Welcome.html"
                   rel="noreferrer"
                   target="_blank"
                 >
-                  Route 53 Developer Guide <ExternalIcon />
+                  Route 53 Documentation <ExternalIcon />
                 </a>
-                <span>AWS official documentation for routing policies and DNS records</span>
+                <span>Official AWS developer guides for routing policies & records</span>
               </div>
             </div>
           </section>
@@ -1413,9 +1469,13 @@ function HostedZones({
         <div>
           <h1>Hosted zones</h1>
           <p>
-            A hosted zone is a container for records that define how you want to route traffic for a domain.{" "}
-            <a href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html" rel="noreferrer" target="_blank">
-              Learn more <ExternalIcon />
+            A hosted zone contains records that tell the Domain Name System (DNS) how you want to route traffic for a domain.{" "}
+            <a
+              href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html"
+              rel="noreferrer"
+              target="_blank"
+            >
+              Info <ExternalIcon />
             </a>
           </p>
         </div>
@@ -1433,7 +1493,7 @@ function HostedZones({
               aria-label="Refresh"
               className="btn icon-btn"
               onClick={loadZones}
-              title="Refresh"
+              title="Refresh hosted zones"
               type="button"
             >
               <RefreshIcon />
@@ -1498,6 +1558,7 @@ function HostedZones({
                 <th>Hosted zone name</th>
                 <th>Type</th>
                 <th>Records</th>
+                <th>Hosted zone ID</th>
                 <th>Description</th>
                 <th>Created</th>
                 <th aria-label="Actions" />
@@ -1506,13 +1567,13 @@ function HostedZones({
             <tbody>
               {loading ? (
                 <tr>
-                  <td className="empty-cell" colSpan={7}>
+                  <td className="empty-cell" colSpan={8}>
                     Loading hosted zones...
                   </td>
                 </tr>
               ) : data.items.length === 0 ? (
                 <tr>
-                  <td className="empty-cell" colSpan={7}>
+                  <td className="empty-cell" colSpan={8}>
                     <div className="empty-state">
                       <span className="route53-mark">53</span>
                       <h3>No hosted zones</h3>
@@ -1555,6 +1616,9 @@ function HostedZones({
                         </span>
                       </td>
                       <td>{zone.record_count}</td>
+                      <td>
+                        <code style={{ fontSize: "12px" }}>Z{String(zone.id).padStart(12, "0")}</code>
+                      </td>
                       <td className="truncate">{zone.description || "—"}</td>
                       <td>{formatDate(zone.created_at)}</td>
                       <td>
@@ -1850,7 +1914,7 @@ function Records({
             <h2>
               Records <span className="count">({data.total})</span>
             </h2>
-            <p>Manage DNS records for this hosted zone.</p>
+            <p>Manage DNS records that route internet traffic for this hosted zone.</p>
           </div>
           <div className="button-row">
             <button
@@ -1911,7 +1975,7 @@ function Records({
             }}
             value={type}
           >
-            <option value="">All record types</option>
+            <option value="">All record types ({RECORD_TYPES.length})</option>
             {RECORD_TYPES.map((recordType) => (
               <option key={recordType} value={recordType}>
                 {recordType}
@@ -1990,7 +2054,9 @@ function Records({
                         </button>
                       </td>
                       <td>
-                        <span className="record-type">{rec.type}</span>
+                        <span className={`record-type-badge type-${rec.type}`}>
+                          {rec.type}
+                        </span>
                       </td>
                       <td>{rec.routing_policy}</td>
                       <td className="record-value">{rec.value}</td>
@@ -2038,12 +2104,16 @@ function Records({
           </div>
           <div className="details-grid">
             <div className="detail-item">
-              <strong>Record name</strong>
+              <strong>Record name (FQDN)</strong>
               <span>{singleSelectedRecord.name}</span>
             </div>
             <div className="detail-item">
-              <strong>Type</strong>
-              <span className="record-type">{singleSelectedRecord.type}</span>
+              <strong>Record Type</strong>
+              <div>
+                <span className={`record-type-badge type-${singleSelectedRecord.type}`}>
+                  {singleSelectedRecord.type}
+                </span>
+              </div>
             </div>
             <div className="detail-item">
               <strong>TTL</strong>
@@ -2054,7 +2124,7 @@ function Records({
               <span>{singleSelectedRecord.routing_policy}</span>
             </div>
             <div className="detail-item" style={{ gridColumn: "1 / -1" }}>
-              <strong>Value(s)</strong>
+              <strong>Configured Value(s)</strong>
               <div className="nameserver-list">{singleSelectedRecord.value}</div>
             </div>
           </div>
@@ -2121,57 +2191,232 @@ function EmptySection({
   section: Exclude<Section, "hosted-zones" | "dashboard">;
   onNavigate: (section: Section) => void;
 }) {
-  const meta: Record<
-    typeof section,
-    { title: string; subtitle: string; description: string; highlights: string[] }
-  > = {
-    "traffic-policies": {
-      title: "Traffic policies",
-      subtitle: "Visual DNS Traffic Flow",
-      description:
-        "Traffic Flow simplifies managing complex global routing configurations using a visual policy editor with latency, geo-location, failover, and weighted routing.",
-      highlights: [
-        "Visual policy versioning and rollout",
-        "Latency-based routing across multiple AWS regions",
-        "Failover and weighted traffic distribution",
-      ],
-    },
-    "health-checks": {
-      title: "Health checks",
-      subtitle: "Monitor resources and configure failover",
-      description:
-        "Route 53 health checks monitor the health and performance of your web applications, web servers, and other resources.",
-      highlights: [
-        "HTTP, HTTPS, and TCP endpoint monitoring",
-        "Integration with Amazon CloudWatch alarms",
-        "Calculated health checks combining multiple endpoints",
-      ],
-    },
-    resolver: {
-      title: "Route 53 Resolver VPCs",
-      subtitle: "Hybrid cloud recursive DNS",
-      description:
-        "Amazon Route 53 Resolver provides recursive DNS lookup for Amazon VPCs and on-premises networks across hybrid environments.",
-      highlights: [
-        "Inbound endpoints to resolve AWS DNS from on-premises",
-        "Outbound endpoints to forward VPC DNS to data centers",
-        "VPC network association and conditional forwarding rules",
-      ],
-    },
-    profiles: {
-      title: "Route 53 Profiles",
-      subtitle: "Unified DNS management across VPCs",
-      description:
-        "Route 53 Profiles lets you bundle DNS configurations (such as private hosted zones, resolver rules, and DNS firewall rule groups) and apply them to multiple VPCs.",
-      highlights: [
-        "Centralized DNS configuration sharing",
-        "Multi-account and multi-VPC profile attachments",
-        "Integrated DNS Firewall security policies",
-      ],
-    },
-  };
+  if (section === "health-checks") {
+    return (
+      <div className="content">
+        <div className="breadcrumb">
+          <button onClick={() => onNavigate("dashboard")} type="button">
+            Route 53
+          </button>
+          <ChevronIcon />
+          <span>Health checks</span>
+        </div>
+        <div className="page-heading">
+          <div>
+            <h1>Health checks (3)</h1>
+            <p>
+              Route 53 monitors the health and performance of your web applications, web servers, and other resources.{" "}
+              <a href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/health-checks-creating.html" rel="noreferrer" target="_blank">
+                Info <ExternalIcon />
+              </a>
+            </p>
+          </div>
+          <button className="btn primary" onClick={() => {}} type="button">
+            Create health check
+          </button>
+        </div>
 
-  const item = meta[section];
+        <div className="warning-box" style={{ marginBottom: "16px", background: "#f1faff", borderLeftColor: "var(--aws-blue)" }}>
+          <strong>Amazon Route 53 Health Checks</strong>
+          <p>
+            Endpoints are monitored continuously from global Route 53 health checkers. Full endpoint health checking will be interactive in a future assignment release.
+          </p>
+        </div>
+
+        <section className="resource-card">
+          <div className="card-header">
+            <div>
+              <h2>Configured health checks <span className="count">(3)</span></h2>
+              <p>Active endpoint monitors with global health checkers.</p>
+            </div>
+            <button className="btn icon-btn" onClick={() => {}} type="button"><RefreshIcon /></button>
+          </div>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Status</th>
+                  <th>Protocol</th>
+                  <th>Endpoint</th>
+                  <th>Port</th>
+                  <th>Health checker regions</th>
+                  <th>Inverted</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>Production Web Tier</b></td>
+                  <td>
+                    <span style={{ color: "var(--aws-green)", display: "inline-flex", alignItems: "center", gap: "6px", fontWeight: 700 }}>
+                      <span className="pulse-green" /> Healthy
+                    </span>
+                  </td>
+                  <td>HTTPS</td>
+                  <td>acme-cloud.com/health</td>
+                  <td>443</td>
+                  <td>Global (8 regions)</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td><b>Production API Gateway</b></td>
+                  <td>
+                    <span style={{ color: "var(--aws-green)", display: "inline-flex", alignItems: "center", gap: "6px", fontWeight: 700 }}>
+                      <span className="pulse-green" /> Healthy
+                    </span>
+                  </td>
+                  <td>HTTPS</td>
+                  <td>api.acme-cloud.com/v1/ping</td>
+                  <td>443</td>
+                  <td>Global (8 regions)</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td><b>Staging Environment</b></td>
+                  <td>
+                    <span style={{ color: "var(--aws-green)", display: "inline-flex", alignItems: "center", gap: "6px", fontWeight: 700 }}>
+                      <span className="pulse-green" /> Healthy
+                    </span>
+                  </td>
+                  <td>HTTPS</td>
+                  <td>staging.acme-dev.net</td>
+                  <td>443</td>
+                  <td>Global (8 regions)</td>
+                  <td>No</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  if (section === "traffic-policies") {
+    return (
+      <div className="content">
+        <div className="breadcrumb">
+          <button onClick={() => onNavigate("dashboard")} type="button">
+            Route 53
+          </button>
+          <ChevronIcon />
+          <span>Traffic policies</span>
+        </div>
+        <div className="page-heading">
+          <div>
+            <h1>Traffic policies (1)</h1>
+            <p>
+              Traffic Flow simplifies managing complex global routing configurations using visual policy versioning.{" "}
+              <a href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/traffic-flow.html" rel="noreferrer" target="_blank">
+                Info <ExternalIcon />
+              </a>
+            </p>
+          </div>
+          <button className="btn primary" onClick={() => {}} type="button">
+            Create traffic policy
+          </button>
+        </div>
+
+        <section className="resource-card">
+          <div className="card-header">
+            <div>
+              <h2>Visual traffic policies <span className="count">(1)</span></h2>
+              <p>Routing rules combining Latency, Geolocation, and Failover rules.</p>
+            </div>
+            <button className="btn icon-btn" onClick={() => {}} type="button"><RefreshIcon /></button>
+          </div>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Policy name</th>
+                  <th>Routing type</th>
+                  <th>Version</th>
+                  <th>Associated records</th>
+                  <th>Created date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>Global-Latency-Routing-v1</b></td>
+                  <td>Latency + Failover</td>
+                  <td><span className="status-badge">Version 1 (Active)</span></td>
+                  <td>2 records (acme-cloud.com)</td>
+                  <td>Oct 01, 2026</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  if (section === "resolver") {
+    return (
+      <div className="content">
+        <div className="breadcrumb">
+          <button onClick={() => onNavigate("dashboard")} type="button">
+            Route 53
+          </button>
+          <ChevronIcon />
+          <span>Resolver VPCs</span>
+        </div>
+        <div className="page-heading">
+          <div>
+            <h1>Route 53 Resolver VPCs (2)</h1>
+            <p>
+              Route 53 Resolver provides recursive DNS lookup for Amazon VPCs and on-premises networks across hybrid clouds.{" "}
+              <a href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver.html" rel="noreferrer" target="_blank">
+                Info <ExternalIcon />
+              </a>
+            </p>
+          </div>
+        </div>
+
+        <section className="resource-card">
+          <div className="card-header">
+            <div>
+              <h2>Associated VPC networks <span className="count">(2)</span></h2>
+              <p>Virtual Private Clouds configured with Route 53 Resolver endpoints.</p>
+            </div>
+          </div>
+          <div className="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>VPC ID</th>
+                  <th>VPC Name</th>
+                  <th>Region</th>
+                  <th>Inbound endpoints</th>
+                  <th>Outbound endpoints</th>
+                  <th>Resolver rules</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>vpc-039a8f4c2b918</code></td>
+                  <td>prod-us-east-1-vpc</td>
+                  <td>us-east-1</td>
+                  <td>2 IP endpoints</td>
+                  <td>2 IP endpoints</td>
+                  <td>4 rules associated</td>
+                </tr>
+                <tr>
+                  <td><code>vpc-19f8e7d6c5a34</code></td>
+                  <td>corp-internal-vpc</td>
+                  <td>us-west-2</td>
+                  <td>2 IP endpoints</td>
+                  <td>1 IP endpoint</td>
+                  <td>2 rules associated</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="content">
@@ -2180,31 +2425,48 @@ function EmptySection({
           Route 53
         </button>
         <ChevronIcon />
-        <span>{item.title}</span>
+        <span>Profiles</span>
       </div>
-      <section className="coming-soon">
-        <span className="route53-mark large">53</span>
-        <h1>{item.title}</h1>
-        <p>{item.description}</p>
-        <div style={{ textAlign: "left", maxWidth: "480px", margin: "16px auto 24px" }}>
-          <strong style={{ fontSize: "12px", color: "var(--aws-muted)", textTransform: "uppercase" }}>
-            Capabilities in full AWS Route 53:
-          </strong>
-          <ul style={{ marginTop: "8px", paddingLeft: "20px", color: "var(--aws-muted)", lineHeight: "1.6" }}>
-            {item.highlights.map((h, i) => (
-              <li key={i}>{h}</li>
-            ))}
-          </ul>
+      <div className="page-heading">
+        <div>
+          <h1>Route 53 Profiles (1)</h1>
+          <p>
+            Profiles let you bundle DNS configurations and apply them across multiple VPCs in your AWS Organization.{" "}
+            <a href="https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/profiles.html" rel="noreferrer" target="_blank">
+              Info <ExternalIcon />
+            </a>
+          </p>
         </div>
-        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-          <span className="status-badge">Coming soon in Route 53 clone</span>
-          <button
-            className="btn primary"
-            onClick={() => onNavigate("hosted-zones")}
-            type="button"
-          >
-            Go to Hosted zones
-          </button>
+      </div>
+
+      <section className="resource-card">
+        <div className="card-header">
+          <div>
+            <h2>Route 53 Profiles <span className="count">(1)</span></h2>
+            <p>Centralized DNS policy profiles.</p>
+          </div>
+        </div>
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Profile ID</th>
+                <th>Profile Name</th>
+                <th>Status</th>
+                <th>Associated VPCs</th>
+                <th>Shared with RAM</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>rp-04b7e891c3f</code></td>
+                <td>Enterprise-Core-DNS-Profile</td>
+                <td><span className="status-badge">Associated</span></td>
+                <td>3 VPCs</td>
+                <td>Enabled (AWS Organizations)</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
     </div>
@@ -2247,7 +2509,6 @@ function ConsoleApp({
     setSection("hosted-zones");
   }
 
-  // Keyboard shortcut listener
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
@@ -2288,7 +2549,11 @@ function ConsoleApp({
         theme={theme}
         user={user}
       />
-      <Sidebar onNavigate={handleNavigate} section={section} />
+      <Sidebar
+        hostedZonesCount={3}
+        onNavigate={handleNavigate}
+        section={section}
+      />
       <main className="main-area">
         {selectedZone ? (
           <Records
@@ -2364,7 +2629,6 @@ export default function Home() {
   });
   const [initializing, setInitializing] = useState(true);
 
-  // Sync theme attribute to HTML
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
@@ -2378,7 +2642,6 @@ export default function Home() {
     });
   }
 
-  // Restore auth session
   useEffect(() => {
     const storedToken = localStorage.getItem(TOKEN_KEY);
     if (!storedToken) {

@@ -1629,3 +1629,82 @@ tr.selected-row:hover {
   color: #eaeded;
 }
 
+/* Color-coded DNS record badges */
+.record-type-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+}
+
+.record-type-badge.type-A {
+  background: #e7f3ff;
+  color: #033160;
+  border: 1px solid #b6d7f5;
+}
+.record-type-badge.type-AAAA {
+  background: #e6fffa;
+  color: #006653;
+  border: 1px solid #b2f5ea;
+}
+.record-type-badge.type-CNAME {
+  background: #ede9fe;
+  color: #4c1d95;
+  border: 1px solid #ddd6fe;
+}
+.record-type-badge.type-TXT {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+.record-type-badge.type-MX {
+  background: #fdf2f8;
+  color: #831843;
+  border: 1px solid #fbcfe8;
+}
+.record-type-badge.type-NS {
+  background: #f3e8ff;
+  color: #581c87;
+  border: 1px solid #e9d5ff;
+}
+.record-type-badge.type-PTR {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+.record-type-badge.type-SRV {
+  background: #fff7ed;
+  color: #9a3412;
+  border: 1px solid #ffedd5;
+}
+.record-type-badge.type-CAA {
+  background: #fefce8;
+  color: #713f12;
+  border: 1px solid #fef08a;
+}
+
+/* Dark mode for badges */
+[data-theme="dark"] .record-type-badge.type-A { background: #0c2d48; color: #70b4fc; border-color: #145388; }
+[data-theme="dark"] .record-type-badge.type-AAAA { background: #0a3a34; color: #4fd1c5; border-color: #13665c; }
+[data-theme="dark"] .record-type-badge.type-CNAME { background: #26164d; color: #c4b5fd; border-color: #4c2889; }
+[data-theme="dark"] .record-type-badge.type-TXT { background: #064e3b; color: #6ee7b7; border-color: #047857; }
+[data-theme="dark"] .record-type-badge.type-MX { background: #4a0d2a; color: #f472b6; border-color: #831843; }
+[data-theme="dark"] .record-type-badge.type-NS { background: #3b0764; color: #d8b4fe; border-color: #6b21a8; }
+[data-theme="dark"] .record-type-badge.type-PTR { background: #1e293b; color: #94a3b8; border-color: #334155; }
+[data-theme="dark"] .record-type-badge.type-SRV { background: #431407; color: #fb923c; border-color: #7c2d12; }
+[data-theme="dark"] .record-type-badge.type-CAA { background: #422006; color: #fde047; border-color: #713f12; }
+
+/* Status pulse indicator */
+.pulse-green {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #037f0c;
+  box-shadow: 0 0 0 2px rgba(3, 127, 12, 0.2);
+}
+
+
