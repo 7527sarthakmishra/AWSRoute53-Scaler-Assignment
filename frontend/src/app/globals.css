@@ -69,99 +69,326 @@ svg {
 }
 
 .topbar {
-  align-items: center;
-  background: var(--aws-navy);
-  color: #fff;
-  display: flex;
-  height: 48px;
+  display: none;
+}
+
+/* Authentic AWS Portal Header */
+.portal-header {
   left: 0;
   position: fixed;
   right: 0;
   top: 0;
-  z-index: 40;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
 }
 
-.topbar button {
+.portal-utility-bar {
+  align-items: center;
+  background: #161e2e;
+  color: #d5dbdb;
+  display: flex;
+  height: 34px;
+  justify-content: space-between;
+  padding: 0 28px;
+  font-size: 12px;
+}
+
+.utility-bar-left {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
+.utility-badge {
+  align-items: center;
+  color: #aab7b8;
+  display: flex;
+  font-size: 11px;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.utility-bar-right {
+  align-items: center;
+  display: flex;
+  gap: 6px;
+  height: 100%;
+}
+
+.utility-item,
+.utility-link {
   align-items: center;
   background: transparent;
   border: 0;
-  color: #fff;
+  color: #d5dbdb;
+  cursor: pointer;
   display: flex;
-  height: 48px;
+  font-size: 12px;
+  font-weight: 500;
+  gap: 4px;
+  height: 100%;
+  padding: 0 8px;
+  text-decoration: none;
+  transition: color 0.15s ease;
 }
 
-.services-trigger {
-  border-right: 1px solid #536577 !important;
-  font-weight: 700;
-  gap: 9px;
-  min-width: 136px;
-  padding: 0 18px;
+.utility-item:hover,
+.utility-link:hover {
+  color: #ffffff;
 }
 
-.grid-icon {
-  font-size: 22px;
-  line-height: 1;
-}
-
-.console-search {
+.utility-avatar {
   align-items: center;
-  background: #fff;
-  border-radius: 2px;
+  background: #232f3e;
+  border: 1.5px solid #ffffff;
+  border-radius: 50%;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  font-size: 11px;
+  font-weight: 700;
+  height: 24px;
+  justify-content: center;
+  margin-left: 6px;
+  width: 24px;
+  transition: transform 0.1s ease;
+}
+
+.utility-avatar:hover {
+  transform: scale(1.08);
+}
+
+.portal-nav-bar {
+  align-items: center;
+  background: #ffffff;
+  border-bottom: 1px solid #eaeded;
+  display: flex;
+  height: 58px;
+  justify-content: space-between;
+  padding: 0 28px;
+}
+
+.portal-nav-left {
+  align-items: center;
+  display: flex;
+  gap: 24px;
+}
+
+.portal-logo {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+}
+
+.portal-main-menu {
+  align-items: center;
+  display: flex;
+  gap: 18px;
+}
+
+.portal-menu-link {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: #16191f;
+  cursor: pointer;
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 3px;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.portal-menu-link:hover {
+  color: #0972d3;
+}
+
+.portal-menu-link.featured {
+  font-weight: 700;
+}
+
+.portal-nav-right {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
+.portal-search-form {
+  align-items: center;
+  background: #f2f3f3;
+  border: 1px solid #879596;
+  border-radius: 4px;
   color: #5f6b7a;
   display: flex;
   gap: 8px;
-  height: 32px;
-  margin-left: 14px;
-  max-width: 540px;
+  height: 34px;
   padding: 0 10px;
-  width: 38vw;
+  width: 250px;
+  transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-.console-search span {
-  flex: 1;
+.portal-search-form:focus-within {
+  background: #fff;
+  border-color: #0972d3;
+  box-shadow: 0 0 0 1px #0972d3;
 }
 
-.console-search kbd {
+.portal-search-form input {
+  background: transparent;
+  border: 0;
+  color: #16191f;
+  font-size: 13px;
+  outline: none;
+  width: 100%;
+}
+
+.portal-search-form kbd {
   background: #eaeded;
   border: 1px solid #879596;
   border-radius: 2px;
-  color: #414d5c;
-  font-size: 11px;
-  padding: 2px 5px;
+  color: #5f6b7a;
+  font-size: 10px;
+  padding: 2px 4px;
+  white-space: nowrap;
 }
 
-.topbar-actions {
+.portal-action-btn {
   align-items: center;
+  background: transparent;
+  border: 1px solid #d5dbdb;
+  border-radius: 4px;
+  color: #5f6b7a;
+  cursor: pointer;
   display: flex;
-  height: 100%;
-  margin-left: auto;
+  height: 34px;
+  justify-content: center;
+  padding: 0 10px;
+  transition: all 0.15s ease;
 }
 
-.topbar-actions > button {
-  border-left: 1px solid transparent;
-  border-right: 1px solid transparent;
+.portal-action-btn:hover {
+  background: #f2f3f3;
+  color: #16191f;
+}
+
+.portal-region-badge {
+  align-items: center;
+  background: #f2f3f3;
+  border: 1px solid #d5dbdb;
+  border-radius: 4px;
+  color: #5f6b7a;
+  display: flex;
+  font-size: 12px;
   font-weight: 600;
-  justify-content: center;
-  min-width: 42px;
+  gap: 5px;
+  height: 34px;
   padding: 0 10px;
 }
 
-.topbar-actions > button:hover {
-  background: #31465f;
-  border-color: #536577;
+.portal-role-badge {
+  align-items: center;
+  background: #f0fbf0;
+  border: 1px solid #90d390;
+  border-radius: 4px;
+  color: #037f0c;
+  display: flex;
+  font-size: 11px;
+  font-weight: 600;
+  height: 34px;
+  padding: 0 10px;
 }
 
-.region,
-.account-button {
-  min-width: auto !important;
+.portal-create-btn {
+  align-items: center;
+  background: #16191f;
+  border: 0;
+  border-radius: 20px;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  font-size: 13px;
+  font-weight: 600;
+  height: 34px;
+  padding: 0 16px;
+  transition: background 0.15s ease;
 }
 
-.account-button {
-  gap: 8px;
-  max-width: 190px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.portal-create-btn:hover {
+  background: #232f3e;
+}
+
+/* Route 53 Sub-Nav Strip */
+.portal-subnav-container {
+  background: linear-gradient(180deg, #ede9fe 0%, #f6f7f9 100%);
+  border-bottom: 1px solid #eaeded;
+  display: flex;
+  height: 48px;
+  padding: 0 28px;
+}
+
+.portal-subnav-card {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.portal-subnav-left {
+  align-items: center;
+  display: flex;
+  gap: 24px;
+}
+
+.portal-subnav-title {
+  color: #16191f;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
   white-space: nowrap;
+}
+
+.portal-subnav-tabs {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.portal-subnav-tabs button,
+.portal-subnav-tabs a {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: #5f6b7a;
+  cursor: pointer;
+  display: flex;
+  font-size: 13px;
+  font-weight: 500;
+  gap: 5px;
+  height: 48px;
+  padding: 0 12px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.portal-subnav-tabs button:hover,
+.portal-subnav-tabs a:hover {
+  color: #16191f;
+}
+
+.portal-subnav-tabs button.active {
+  border-bottom-color: #0972d3;
+  color: #0972d3;
+  font-weight: 700;
+}
+
+.tab-count {
+  font-size: 11px;
+  opacity: 0.85;
 }
 
 .account-menu {
@@ -172,10 +399,10 @@ svg {
   flex-direction: column;
   padding: 16px;
   position: fixed;
-  right: 12px;
-  top: 46px;
-  width: 240px;
-  z-index: 80;
+  right: 28px;
+  top: 38px;
+  width: 250px;
+  z-index: 90;
 }
 
 .account-menu span {
@@ -205,7 +432,8 @@ svg {
   overflow-y: auto;
   padding-bottom: 48px;
   position: fixed;
-  top: 48px;
+  top: 140px;
+  height: calc(100vh - 140px);
   width: 250px;
   z-index: 20;
 }
@@ -296,7 +524,7 @@ svg {
 .main-area {
   margin-left: 250px;
   min-height: 100vh;
-  padding-top: 48px;
+  padding-top: 140px;
 }
 
 .content {
@@ -920,36 +1148,26 @@ input[type="checkbox"] {
 }
 
 .login-page {
-  background: #f2f3f3;
+  background: radial-gradient(ellipse at 75% 20%, #152744 0%, #0a111e 48%, #04070e 100%);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-}
-
-.login-header {
-  align-items: center;
-  background: var(--aws-navy);
-  display: flex;
-  height: 62px;
-  padding: 0 34px;
-}
-
-.aws-wordmark {
+  position: relative;
+  overflow-x: hidden;
   color: #fff;
-  display: inline-flex;
-  flex-direction: column;
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 19px;
 }
 
-.aws-wordmark i {
-  border-bottom: 3px solid var(--aws-orange);
-  border-radius: 50%;
-  display: block;
-  height: 7px;
-  transform: rotate(-7deg);
-  width: 41px;
+.login-topbar {
+  align-items: center;
+  display: flex;
+  height: 72px;
+  padding: 0 40px;
+}
+
+.login-aws-logo {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
 
 .login-shell {
@@ -957,63 +1175,153 @@ input[type="checkbox"] {
   display: flex;
   flex: 1;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 24px 20px;
 }
 
 .login-card {
-  background: #fff;
-  border: 1px solid #d5dbdb;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-  padding: 32px;
+  background: #141d2b;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.65);
+  padding: 36px 32px 32px;
   width: 440px;
+  max-width: 95vw;
 }
 
-.login-service {
-  align-items: center;
-  display: flex;
-  gap: 12px;
-  margin-bottom: 25px;
+.login-card-title {
+  color: #ffffff;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
 }
 
-.login-service strong,
-.login-service small {
+.login-field-label {
+  color: #d5dbdb;
   display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
 }
 
-.login-service strong {
-  font-size: 17px;
+.login-input {
+  background: #0d1421 !important;
+  border: 1px solid #3b4656 !important;
+  border-radius: 6px !important;
+  color: #ffffff !important;
+  display: block;
+  font-size: 14px;
+  height: 42px !important;
+  margin-top: 0 !important;
+  padding: 0 14px !important;
+  width: 100%;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.login-service small {
-  color: var(--aws-muted);
-  margin-top: 2px;
+.login-input:focus {
+  border-color: #ec7211 !important;
+  box-shadow: 0 0 0 2px rgba(236, 114, 17, 0.25) !important;
+  outline: none !important;
 }
 
-.login-card h1 {
-  font-size: 25px;
-  margin-bottom: 9px;
+.login-continue-btn {
+  align-items: center;
+  background: #ec7211;
+  border: 0;
+  border-radius: 22px;
+  color: #0a0e17;
+  cursor: pointer;
+  display: flex;
+  font-size: 14px;
+  font-weight: 700;
+  height: 42px;
+  justify-content: center;
+  margin-top: 20px;
+  transition: background 0.15s ease, transform 0.05s ease;
+  width: 100%;
 }
 
-.login-card .muted {
-  color: var(--aws-muted);
-  line-height: 1.45;
-  margin-bottom: 22px;
+.login-continue-btn:hover:not(:disabled) {
+  background: #f08125;
 }
 
-.login-card input {
-  height: 38px;
+.login-continue-btn:active:not(:disabled) {
+  transform: scale(0.99);
 }
 
-.demo-hint {
-  align-items: flex-start;
-  background: #f1faff;
-  border: 1px solid #b6d7f5;
+.login-continue-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.login-divider {
+  align-items: center;
+  color: #879596;
+  display: flex;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  margin: 22px 0;
+  text-align: center;
+}
+
+.login-divider::before,
+.login-divider::after {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  content: "";
+  flex: 1;
+}
+
+.login-divider span {
+  padding: 0 16px;
+}
+
+.login-provider-btn {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 22px;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+  height: 42px;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.login-provider-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.login-provider-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login-demo-pill {
+  align-items: center;
+  background: rgba(9, 114, 211, 0.14);
+  border: 1px solid rgba(9, 114, 211, 0.35);
+  border-radius: 8px;
+  color: #93c5fd;
+  cursor: pointer;
   display: flex;
   font-size: 12px;
   gap: 8px;
   line-height: 1.45;
-  margin-top: 20px;
-  padding: 11px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  transition: background 0.15s ease;
+}
+
+.login-demo-pill:hover {
+  background: rgba(9, 114, 211, 0.24);
 }
 
 .alert {
@@ -1023,20 +1331,40 @@ input[type="checkbox"] {
 }
 
 .alert.error {
-  background: #fff1f0;
+  background: rgba(209, 50, 18, 0.15);
   border-color: var(--aws-red);
-  color: #7d210d;
+  color: #fca5a5;
+  border-radius: 4px;
 }
 
 .login-footer {
   align-items: center;
-  color: var(--aws-muted);
+  color: #879596;
   display: flex;
+  flex-direction: column;
   font-size: 12px;
-  gap: 18px;
+  gap: 6px;
   justify-content: center;
-  min-height: 60px;
+  min-height: 70px;
   padding: 16px;
+}
+
+.login-footer-links {
+  display: flex;
+  gap: 16px;
+}
+
+.login-footer-links span {
+  cursor: pointer;
+}
+
+.login-footer-links span:hover {
+  color: #d5dbdb;
+}
+
+.login-copyright {
+  font-size: 11px;
+  color: #687078;
 }
 
 .loading-screen {
@@ -1705,6 +2033,71 @@ tr.selected-row:hover {
   border-radius: 50%;
   background: #037f0c;
   box-shadow: 0 0 0 2px rgba(3, 127, 12, 0.2);
+}
+
+/* Portal dark mode overrides */
+[data-theme="dark"] .portal-utility-bar {
+  background: #0f1522;
+  color: #aab7b8;
+}
+
+[data-theme="dark"] .portal-nav-bar {
+  background: #161f2e;
+  border-color: #2c3848;
+}
+
+[data-theme="dark"] .portal-menu-link {
+  color: #d5dbdb;
+}
+
+[data-theme="dark"] .portal-menu-link:hover {
+  color: #539fe5;
+}
+
+[data-theme="dark"] .portal-search-form {
+  background: #0f141c;
+  border-color: #414d5c;
+  color: #eaeded;
+}
+
+[data-theme="dark"] .portal-search-form input {
+  color: #eaeded;
+}
+
+[data-theme="dark"] .portal-action-btn,
+[data-theme="dark"] .portal-region-badge {
+  background: #0f141c;
+  border-color: #414d5c;
+  color: #d5dbdb;
+}
+
+[data-theme="dark"] .portal-subnav-container {
+  background: linear-gradient(180deg, #1e2638 0%, #161e2a 100%);
+  border-color: #2c3848;
+}
+
+[data-theme="dark"] .portal-subnav-title {
+  color: #eaeded;
+}
+
+[data-theme="dark"] .portal-subnav-tabs button,
+[data-theme="dark"] .portal-subnav-tabs a {
+  color: #aab7b8;
+}
+
+[data-theme="dark"] .portal-subnav-tabs button:hover,
+[data-theme="dark"] .portal-subnav-tabs a:hover {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .portal-subnav-tabs button.active {
+  border-bottom-color: #539fe5;
+  color: #539fe5;
+}
+
+[data-theme="dark"] .portal-create-btn {
+  background: #ec7211;
+  color: #0a0e17;
 }
 
 

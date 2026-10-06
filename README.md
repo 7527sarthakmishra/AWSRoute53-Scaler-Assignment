@@ -20,7 +20,8 @@ A pixel-accurate, full-stack recreation of the **Amazon Web Services (AWS) Route
 
 ## 📸 Key Highlights & Route 53 Experience
 
-- **Authentic AWS Console UI & UX**: Replicates AWS Cloudscape design language, AWS Global top bar, breadcrumb trails, resource counts, status chips (`In sync`, `Active`, `Healthy`), and dark/light mode toggle.
+- **Authentic AWS Portal & Console Header**: Replicates the exact AWS portal navigation (`https://aws.amazon.com/route53/`) with the official AWS logo (featuring the iconic orange smile arrow), dark utility bar (`🌐 English ⌵`, `Contact us`, `AWS Marketplace`, `Support ⌵`, `My account ⌵`, avatar badge `(S)`), global search `[Alt+S]`, and the floating lavender Route 53 subnav strip (`Overview`, `Hosted zones`, `Health checks`, `Traffic policies`, `Resolver VPCs`, `Profiles`, `Features`, `Pricing`, `Resources`, `FAQs`).
+- **Authentic "Get Started" Sign-in Portal**: Replicates the modern AWS auth experience with the official white AWS vector logo, clean "Get started" card, email input, AWS orange `Continue` button, and social sign-in providers (Google, Apple, GitHub, Amazon) alongside seamless 1-click demo access (`admin@example.com` / `route53demo`).
 - **Hosted Zone Lifecycle (CRUD)**: Create, inspect, search, filter, paginate, edit, and delete public and private hosted zones with automatic delegation sets (4 AWS authoritative nameservers) and one-click copy.
 - **Comprehensive DNS Record Management (CRUD)**: Complete support for all 9 Route 53 DNS record types:
   - `A` (IPv4 address)

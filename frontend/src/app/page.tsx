@@ -10,6 +10,9 @@ import {
   useState,
 } from "react";
 import {
+  AmazonIcon,
+  AppleIcon,
+  AwsLogo,
   CheckIcon,
   ChevronIcon,
   CloseIcon,
@@ -17,7 +20,9 @@ import {
   DownloadIcon,
   EditIcon,
   ExternalIcon,
+  GithubIcon,
   GlobeIcon,
+  GoogleIcon,
   InfoIcon,
   KeyboardIcon,
   MoonIcon,
@@ -187,7 +192,6 @@ function Login({
   onLogin: (token: string, user: User) => void;
 }) {
   const [email, setEmail] = useState("admin@example.com");
-  const [password, setPassword] = useState("route53demo");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -196,11 +200,34 @@ function Login({
     setBusy(true);
     setError("");
     try {
-      const result = await api.login(email, password);
+      const emailToUse = email.trim() || "admin@example.com";
+      const result = await api.login(emailToUse, "route53demo");
       localStorage.setItem(TOKEN_KEY, result.token);
       onLogin(result.token, result.user);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "Sign in failed.");
+      setError(
+        reason instanceof Error
+          ? reason.message
+          : "Sign in failed. Default demo: admin@example.com / route53demo"
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleProviderLogin(provider: string) {
+    setBusy(true);
+    setError("");
+    try {
+      const result = await api.login("admin@example.com", "route53demo");
+      localStorage.setItem(TOKEN_KEY, result.token);
+      onLogin(result.token, result.user);
+    } catch (reason) {
+      setError(
+        reason instanceof Error
+          ? reason.message
+          : `Sign in with ${provider} failed.`
+      );
     } finally {
       setBusy(false);
     }
@@ -208,62 +235,110 @@ function Login({
 
   return (
     <main className="login-page">
-      <div className="login-header">
-        <div className="aws-wordmark">
-          <span>aws</span>
-          <i />
+      <header className="login-topbar">
+        <div className="login-aws-logo" title="Amazon Web Services">
+          <AwsLogo height={44} variant="white" width={74} />
         </div>
-      </div>
+      </header>
+
       <div className="login-shell">
         <section className="login-card">
-          <div className="login-service">
-            <span className="route53-mark">53</span>
-            <div>
-              <strong>Amazon Route 53</strong>
-              <small>Management Console</small>
-            </div>
-          </div>
-          <h1>Sign in to the console</h1>
-          <p className="muted">
-            Use the demo credentials below to access your Route 53 resources.
-          </p>
+          <h1 className="login-card-title">Get started</h1>
+
           {error && <div className="alert error">{error}</div>}
+
           <form onSubmit={submit}>
-            <label>
-              Email
-              <input
-                autoComplete="username"
-                onChange={(event) => setEmail(event.target.value)}
-                required
-                type="email"
-                value={email}
-              />
-            </label>
-            <label>
-              Password
-              <input
-                autoComplete="current-password"
-                onChange={(event) => setPassword(event.target.value)}
-                required
-                type="password"
-                value={password}
-              />
-            </label>
-            <button className="btn primary wide" disabled={busy} type="submit">
-              {busy ? "Signing in..." : "Sign in"}
+            <label className="login-field-label">Email</label>
+            <input
+              autoComplete="username"
+              className="login-input"
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="username@example.com"
+              required
+              type="email"
+              value={email}
+            />
+
+            <button
+              className="login-continue-btn"
+              disabled={busy}
+              type="submit"
+            >
+              {busy ? "Continuing..." : "Continue"}
             </button>
           </form>
-          <div className="demo-hint">
+
+          <div className="login-divider">
+            <span>OR</span>
+          </div>
+
+          <button
+            className="login-provider-btn"
+            disabled={busy}
+            onClick={() => handleProviderLogin("Google")}
+            type="button"
+          >
+            <GoogleIcon />
+            <span>Continue with Google</span>
+          </button>
+
+          <button
+            className="login-provider-btn"
+            disabled={busy}
+            onClick={() => handleProviderLogin("Apple")}
+            type="button"
+          >
+            <AppleIcon />
+            <span>Continue with Apple</span>
+          </button>
+
+          <button
+            className="login-provider-btn"
+            disabled={busy}
+            onClick={() => handleProviderLogin("GitHub")}
+            type="button"
+          >
+            <GithubIcon />
+            <span>Continue with GitHub</span>
+          </button>
+
+          <button
+            className="login-provider-btn"
+            disabled={busy}
+            onClick={() => handleProviderLogin("Amazon")}
+            type="button"
+          >
+            <AmazonIcon />
+            <span>Continue with Amazon</span>
+          </button>
+
+          <div
+            className="login-demo-pill"
+            onClick={() => {
+              setEmail("admin@example.com");
+              handleProviderLogin("Demo");
+            }}
+            title="Click to sign in with demo credentials immediately"
+          >
             <InfoIcon />
             <span>
-              Demo: <b>admin@example.com</b> / <b>route53demo</b>
+              Pre-configured: <b>admin@example.com</b> (Click to sign in)
             </span>
           </div>
         </section>
       </div>
+
       <footer className="login-footer">
-        Privacy &nbsp; | &nbsp; Site Terms &nbsp; | &nbsp; Cookie Preferences
-        <span>© 2026, Amazon Web Services, Inc. or its affiliates.</span>
+        <div className="login-footer-links">
+          <span>Privacy</span>
+          <span>|</span>
+          <span>Site Terms</span>
+          <span>|</span>
+          <span>Cookie Preferences</span>
+        </div>
+        <div className="login-copyright">
+          © 2026, Amazon Web Services, Inc. or its affiliates.
+        </div>
       </footer>
     </main>
   );
@@ -272,17 +347,25 @@ function Login({
 function Header({
   user,
   theme,
+  section,
+  hostedZonesCount = 3,
+  onNavigate,
   onLogout,
   onToggleTheme,
   onOpenShortcuts,
   onSearchGlobal,
+  onCreateZone,
 }: {
   user: User;
   theme: "light" | "dark";
+  section?: Section;
+  hostedZonesCount?: number;
+  onNavigate?: (section: Section) => void;
   onLogout: () => void;
   onToggleTheme: () => void;
   onOpenShortcuts: () => void;
   onSearchGlobal: (query: string) => void;
+  onCreateZone?: () => void;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -297,60 +380,231 @@ function Header({
 
   return (
     <>
-      <header className="topbar">
-        <button className="services-trigger" type="button">
-          <span className="grid-icon">▦</span>
-          Services
-        </button>
-        <form className="console-search" onSubmit={handleSearchSubmit}>
-          <SearchIcon />
-          <input
-            id="global-search-input"
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search hosted zones [Alt+S]"
-            ref={searchInputRef}
-            type="text"
-            value={query}
-          />
-          <kbd>[Alt+S]</kbd>
-        </form>
-        <div className="topbar-actions">
-          <button
-            aria-label="Toggle theme"
-            className="icon-btn"
-            onClick={onToggleTheme}
-            title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-            type="button"
-          >
-            {theme === "dark" ? <SunIcon /> : <MoonIcon />}
-          </button>
-          <button
-            aria-label="Keyboard shortcuts"
-            className="icon-btn"
-            onClick={onOpenShortcuts}
-            title="Keyboard shortcuts [?]"
-            type="button"
-          >
-            <KeyboardIcon />
-          </button>
-          <button
-            className="region"
-            title="Amazon Route 53 does not require region selection (Global service)"
-            type="button"
-          >
-            <GlobeIcon />
-            Global
-          </button>
-          <button
-            className="account-button"
-            onClick={() => setMenuOpen((value) => !value)}
-            type="button"
-          >
-            {user.name || "sarthak-admin @ 1234-5678-9012"}
-            <span>⌄</span>
-          </button>
+      <header className="portal-header">
+        {/* Layer 1: Top Utility Bar */}
+        <div className="portal-utility-bar">
+          <div className="utility-bar-left">
+            <span className="utility-badge">
+              <span className="pulse-green" /> AWS Management Console
+            </span>
+          </div>
+          <div className="utility-bar-right">
+            <button className="utility-item" type="button">
+              <GlobeIcon /> English <span>⌵</span>
+            </button>
+            <a
+              className="utility-link"
+              href="https://aws.amazon.com/contact-us/"
+              rel="noreferrer"
+              target="_blank"
+            >
+              Contact us
+            </a>
+            <a
+              className="utility-link"
+              href="https://aws.amazon.com/marketplace"
+              rel="noreferrer"
+              target="_blank"
+            >
+              AWS Marketplace
+            </a>
+            <button className="utility-item" type="button">
+              Support <span>⌵</span>
+            </button>
+            <button
+              className="utility-item"
+              onClick={() => setMenuOpen((value) => !value)}
+              type="button"
+            >
+              My account <span>⌵</span>
+            </button>
+            <div
+              className="utility-avatar"
+              onClick={() => setMenuOpen((value) => !value)}
+              title={user.email}
+            >
+              <span>{user.name ? user.name[0].toUpperCase() : "S"}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Layer 2: Main Navigation Bar */}
+        <div className="portal-nav-bar">
+          <div className="portal-nav-left">
+            <div
+              className="portal-logo"
+              onClick={() => onNavigate?.("dashboard")}
+              style={{ cursor: "pointer" }}
+              title="AWS Route 53 Home"
+            >
+              <AwsLogo
+                height={38}
+                variant={theme === "dark" ? "white" : "dark"}
+                width={64}
+              />
+            </div>
+            <nav className="portal-main-menu">
+              <a
+                className="portal-menu-link featured"
+                href="https://reinvent.awsevents.com/"
+                rel="noreferrer"
+                target="_blank"
+              >
+                re:Invent
+              </a>
+              <button
+                className="portal-menu-link"
+                onClick={() => onNavigate?.("dashboard")}
+                type="button"
+              >
+                Discover AWS
+              </button>
+              <button
+                className="portal-menu-link"
+                onClick={() => onNavigate?.("hosted-zones")}
+                type="button"
+              >
+                Products
+              </button>
+              <button className="portal-menu-link" type="button">
+                More <span>⌵</span>
+              </button>
+            </nav>
+          </div>
+
+          <div className="portal-nav-right">
+            <form className="portal-search-form" onSubmit={handleSearchSubmit}>
+              <SearchIcon />
+              <input
+                id="global-search-input"
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search resources [Alt+S]"
+                ref={searchInputRef}
+                type="text"
+                value={query}
+              />
+              <kbd>[Alt+S]</kbd>
+            </form>
+            <button
+              aria-label="Toggle theme"
+              className="portal-action-btn"
+              onClick={onToggleTheme}
+              title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+              type="button"
+            >
+              {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+            </button>
+            <button
+              aria-label="Keyboard shortcuts"
+              className="portal-action-btn"
+              onClick={onOpenShortcuts}
+              title="Keyboard shortcuts [?]"
+              type="button"
+            >
+              <KeyboardIcon />
+            </button>
+            <div className="portal-region-badge">
+              <GlobeIcon /> Global
+            </div>
+            <div className="portal-role-badge">
+              <span>IAM: AdministratorAccess</span>
+            </div>
+            <button
+              className="portal-create-btn"
+              onClick={onCreateZone || (() => onNavigate?.("hosted-zones"))}
+              type="button"
+            >
+              + Create hosted zone
+            </button>
+          </div>
+        </div>
+
+        {/* Layer 3: Route 53 Sub-Nav Strip */}
+        <div className="portal-subnav-container">
+          <div className="portal-subnav-card">
+            <div className="portal-subnav-left">
+              <div className="portal-subnav-title">
+                <strong>Amazon Route 53</strong>
+              </div>
+              <nav className="portal-subnav-tabs">
+                <button
+                  className={section === "dashboard" ? "active" : ""}
+                  onClick={() => onNavigate?.("dashboard")}
+                  type="button"
+                >
+                  Overview
+                </button>
+                <button
+                  className={section === "hosted-zones" ? "active" : ""}
+                  onClick={() => onNavigate?.("hosted-zones")}
+                  type="button"
+                >
+                  Hosted zones <span className="tab-count">({hostedZonesCount})</span>
+                </button>
+                <button
+                  className={section === "health-checks" ? "active" : ""}
+                  onClick={() => onNavigate?.("health-checks")}
+                  type="button"
+                >
+                  Health checks <span className="tab-count">(3)</span>
+                </button>
+                <button
+                  className={section === "traffic-policies" ? "active" : ""}
+                  onClick={() => onNavigate?.("traffic-policies")}
+                  type="button"
+                >
+                  Traffic policies <span className="tab-count">(1)</span>
+                </button>
+                <button
+                  className={section === "resolver" ? "active" : ""}
+                  onClick={() => onNavigate?.("resolver")}
+                  type="button"
+                >
+                  Resolver VPCs <span className="tab-count">(2)</span>
+                </button>
+                <button
+                  className={section === "profiles" ? "active" : ""}
+                  onClick={() => onNavigate?.("profiles")}
+                  type="button"
+                >
+                  Profiles <span className="tab-count">(1)</span>
+                </button>
+                <button className="portal-menu-link" style={{ padding: "0 8px" }} type="button">
+                  Features <span>⌵</span>
+                </button>
+                <a
+                  className="portal-menu-link"
+                  href="https://aws.amazon.com/route53/pricing/"
+                  rel="noreferrer"
+                  style={{ padding: "0 8px" }}
+                  target="_blank"
+                >
+                  Pricing
+                </a>
+                <a
+                  className="portal-menu-link"
+                  href="https://aws.amazon.com/route53/resources/"
+                  rel="noreferrer"
+                  style={{ padding: "0 8px" }}
+                  target="_blank"
+                >
+                  Resources
+                </a>
+                <a
+                  className="portal-menu-link"
+                  href="https://aws.amazon.com/route53/faqs/"
+                  rel="noreferrer"
+                  style={{ padding: "0 8px" }}
+                  target="_blank"
+                >
+                  FAQs
+                </a>
+              </nav>
+            </div>
+          </div>
         </div>
       </header>
+
       {menuOpen && (
         <div className="account-menu">
           <strong>{user.name || "Sarthak Mishra (Admin)"}</strong>
@@ -2542,10 +2796,13 @@ function ConsoleApp({
   return (
     <div className="console">
       <Header
+        onCreateZone={() => setZoneFormOpen(true)}
         onLogout={onLogout}
+        onNavigate={handleNavigate}
         onOpenShortcuts={() => setShortcutsOpen(true)}
         onSearchGlobal={handleGlobalSearch}
         onToggleTheme={onToggleTheme}
+        section={section}
         theme={theme}
         user={user}
       />
