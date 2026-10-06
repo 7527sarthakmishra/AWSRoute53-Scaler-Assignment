@@ -392,24 +392,12 @@ function Header({
             <button className="utility-item" type="button">
               <GlobeIcon /> English <span>⌵</span>
             </button>
-            <a
-              className="utility-link"
-              href="https://aws.amazon.com/contact-us/"
-              rel="noreferrer"
-              target="_blank"
+            <button
+              className="utility-item"
+              onClick={onOpenShortcuts}
+              type="button"
             >
-              Contact us
-            </a>
-            <a
-              className="utility-link"
-              href="https://aws.amazon.com/marketplace"
-              rel="noreferrer"
-              target="_blank"
-            >
-              AWS Marketplace
-            </a>
-            <button className="utility-item" type="button">
-              Support <span>⌵</span>
+              Shortcuts <span>[?]</span>
             </button>
             <button
               className="utility-item"
@@ -443,33 +431,14 @@ function Header({
                 width={64}
               />
             </div>
-            <nav className="portal-main-menu">
-              <a
-                className="portal-menu-link featured"
-                href="https://reinvent.awsevents.com/"
-                rel="noreferrer"
-                target="_blank"
-              >
-                re:Invent
-              </a>
-              <button
-                className="portal-menu-link"
-                onClick={() => onNavigate?.("dashboard")}
-                type="button"
-              >
-                Discover AWS
-              </button>
-              <button
-                className="portal-menu-link"
-                onClick={() => onNavigate?.("hosted-zones")}
-                type="button"
-              >
-                Products
-              </button>
-              <button className="portal-menu-link" type="button">
-                More <span>⌵</span>
-              </button>
-            </nav>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{ fontSize: "16px", fontWeight: 700, color: "inherit" }}>
+                Route 53
+              </span>
+              <span style={{ fontSize: "12px", color: "var(--aws-muted)", background: "var(--aws-bg)", padding: "2px 8px", borderRadius: "12px" }}>
+                DNS Console
+              </span>
+            </div>
           </div>
 
           <div className="portal-nav-right">
@@ -569,36 +538,6 @@ function Header({
                 >
                   Profiles <span className="tab-count">(1)</span>
                 </button>
-                <button className="portal-menu-link" style={{ padding: "0 8px" }} type="button">
-                  Features <span>⌵</span>
-                </button>
-                <a
-                  className="portal-menu-link"
-                  href="https://aws.amazon.com/route53/pricing/"
-                  rel="noreferrer"
-                  style={{ padding: "0 8px" }}
-                  target="_blank"
-                >
-                  Pricing
-                </a>
-                <a
-                  className="portal-menu-link"
-                  href="https://aws.amazon.com/route53/resources/"
-                  rel="noreferrer"
-                  style={{ padding: "0 8px" }}
-                  target="_blank"
-                >
-                  Resources
-                </a>
-                <a
-                  className="portal-menu-link"
-                  href="https://aws.amazon.com/route53/faqs/"
-                  rel="noreferrer"
-                  style={{ padding: "0 8px" }}
-                  target="_blank"
-                >
-                  FAQs
-                </a>
               </nav>
             </div>
           </div>
