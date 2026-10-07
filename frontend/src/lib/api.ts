@@ -30,8 +30,8 @@ type ApiDnsRecord = {
 };
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ??
-  "http://localhost:8000/api";
+  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
+  (typeof window !== "undefined" ? "/api" : "http://localhost:8000/api");
 
 class ApiError extends Error {
   constructor(

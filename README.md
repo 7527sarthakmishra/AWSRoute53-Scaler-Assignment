@@ -273,33 +273,20 @@ All protected endpoints accept `Authorization: Bearer <token>`.
 
 ---
 
-## ☁️ Deployment Guide
+## ☁️ Deployment Guide (Vercel)
 
-### Vercel Multi-Service Monorepo Deployment
-This repository is configured with a root `vercel.json` implementing Vercel's multi-service schema:
-
-```json
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "services": {
-    "frontend": { "root": "frontend" },
-    "backend": { "root": "backend" }
-  },
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/backend/$1" },
-    { "source": "/(.*)", "destination": "/frontend/$1" }
-  ]
-}
-```
+Deploying to Vercel is 1-click and zero-configuration:
 
 1. Push your repository to GitHub.
-2. In Vercel, import your repository. Vercel automatically detects the root `vercel.json` and configures the multi-service build.
-3. Click **Deploy**.
+2. In [Vercel](https://vercel.com/), click **"Add New Project"** and import this repository.
+3. In the **Root Directory** setting, click **Edit** and select **`frontend`** (the folder marked with the Next.js `(N)` icon).
+4. Vercel automatically detects the **Application Preset**: **`Next.js`**.
+5. Leave all build settings as default (`next build`, `.next`, `npm install`).
+6. Click **Deploy**!
 
-### Alternative: Standalone Frontend on Vercel + Backend on Render/Fly.io
-If deploying the backend to a dedicated persistent VM or container host:
-1. **Frontend (Vercel)**: Set Root Directory to `frontend`. Add environment variable `NEXT_PUBLIC_API_URL=https://your-backend-api.onrender.com/api`.
-2. **Backend (Render / Railway / Fly.io)**: Set Root Directory to `backend`. Set Start Command to `uvicorn app.main:app --host 0.0.0.0 --port $PORT`. Attach persistent volume for SQLite at `/app/data/route53_clone.db`.
+> **💡 Note**: The Next.js frontend includes built-in Serverless Route Handlers for all Route 53 API endpoints (`/api/auth/*`, `/api/hosted-zones/*`, `/api/health`, etc.) and pre-seeded mock storage, making the Vercel deployment 100% self-contained and fully functional without needing an external server!
+>
+> If you wish to connect to an external FastAPI backend on Render or Fly.io, simply add the Environment Variable `NEXT_PUBLIC_API_URL=https://your-backend.onrender.com/api`.
 
 ---
 
