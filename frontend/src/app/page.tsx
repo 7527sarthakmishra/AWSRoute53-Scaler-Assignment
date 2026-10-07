@@ -2679,12 +2679,44 @@ function ConsoleApp({
   onLogout: () => void;
   onToggleTheme: () => void;
 }) {
-  const [section, setSection] = useState<Section>("dashboard");
+  const [section, setSection] = useState<Section>(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const targetSec = params.get("section") as Section;
+      if (
+        targetSec &&
+        [
+          "dashboard",
+          "hosted-zones",
+          "health-checks",
+          "traffic-policies",
+          "resolver",
+          "profiles",
+        ].includes(targetSec)
+      ) {
+        return targetSec;
+      }
+    }
+    return "dashboard";
+  });
   const [selectedZone, setSelectedZone] = useState<HostedZone | null>(null);
   const [globalSearchTerm, setGlobalSearchTerm] = useState("");
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [zoneFormOpen, setZoneFormOpen] = useState(false);
   const [notice, setNotice] = useState<Notice | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("records") === "true") {
+        api.listZones(token, "", 1, 10).then((res) => {
+          if (res.items.length > 0) {
+            setSelectedZone(res.items[0]);
+          }
+        }).catch(() => {});
+      }
+    }
+  }, [token]);
 
   const notify = useCallback((nextNotice: Notice) => {
     setNotice(nextNotice);
@@ -2839,6 +2871,21 @@ export default function Home() {
   }
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("demo") === "true") {
+        api
+          .login("admin@example.com", "route53demo")
+          .then((res) => {
+            localStorage.setItem(TOKEN_KEY, res.token);
+            setToken(res.token);
+            setUser(res.user);
+          })
+          .catch(() => {})
+          .finally(() => setInitializing(false));
+        return;
+      }
+    }
     const storedToken = localStorage.getItem(TOKEN_KEY);
     if (!storedToken) {
       queueMicrotask(() => setInitializing(false));
