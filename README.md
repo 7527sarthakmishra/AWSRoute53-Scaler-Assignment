@@ -200,9 +200,7 @@ npm run dev
 ```
 
 ### Access Points:
-- **Web Console**: [http://localhost:3000](http://localhost:3000)
-- **FastAPI Interactive Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
-- **API Health Check**: [http://localhost:8000/api/health](http://localhost:8000/api/health)
+- **Vercel(for deployment)**: [https://aws-route53-scaler-assignment.vercel.app/)
 
 ### Default Credentials:
 | Field | Value |
